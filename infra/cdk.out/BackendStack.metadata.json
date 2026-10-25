@@ -1,0 +1,2316 @@
+{
+  "/BackendStack": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/UserFileBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "encryption": "S3_MANAGED",
+        "blockPublicAccess": "*",
+        "enforceSSL": true,
+        "removalPolicy": "destroy",
+        "autoDeleteObjects": true
+      }
+    }
+  ],
+  "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/BackendStack/BdaOutputBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "encryption": "S3_MANAGED",
+        "blockPublicAccess": "*",
+        "enforceSSL": true,
+        "removalPolicy": "destroy",
+        "autoDeleteObjects": true
+      }
+    }
+  ],
+  "/BackendStack/ProcessedBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "encryption": "S3_MANAGED",
+        "blockPublicAccess": "*",
+        "enforceSSL": true,
+        "removalPolicy": "destroy",
+        "autoDeleteObjects": true
+      }
+    }
+  ],
+  "/BackendStack/KbSourceBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "encryption": "S3_MANAGED",
+        "blockPublicAccess": "*",
+        "enforceSSL": true,
+        "removalPolicy": "destroy",
+        "autoDeleteObjects": true
+      }
+    }
+  ],
+  "/BackendStack/DatebaseTable": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "partitionKey": {
+          "name": "*",
+          "type": "S"
+        },
+        "sortKey": {
+          "name": "*",
+          "type": "S"
+        },
+        "timeToLiveAttribute": "*",
+        "removalPolicy": "destroy"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addGlobalSecondaryIndex": [
+          {
+            "indexName": "*"
+          }
+        ]
+      }
+    }
+  ],
+  "/BackendStack/Budget": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Budget"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:117:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/VectorBucket": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VectorBucket"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:150:26)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/VectorIndex": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VectorIndex"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:153:25)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/KnowledgeBaseRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        }
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/KnowledgeBase": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBase"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:201:27)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/KnowledgeBaseDataSource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseDataSource"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:227:24)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaProject": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaProject"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:251:24)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestDeadLetterQueue": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "fifo": true,
+        "retentionPeriod": "*"
+      }
+    }
+  ],
+  "/BackendStack/IngestQueue": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "fifo": true,
+        "visibilityTimeout": "*",
+        "deadLetterQueue": {
+          "queue": "*",
+          "maxReceiveCount": "*"
+        }
+      }
+    }
+  ],
+  "/BackendStack/StartParseFunctionLogs": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "retention": 7,
+        "removalPolicy": "destroy"
+      }
+    }
+  ],
+  "/BackendStack/StartParseFunction": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*",
+        "code": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*"
+      }
+    }
+  ],
+  "/BackendStack/PostProcessFunctionLogs": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "retention": 7,
+        "removalPolicy": "destroy"
+      }
+    }
+  ],
+  "/BackendStack/PostProcessFunction": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*",
+        "code": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*"
+      }
+    }
+  ],
+  "/BackendStack/BdaCompletionRule": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "eventPattern": {
+          "source": "*",
+          "detailType": "*"
+        }
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addEventPattern": [
+          {
+            "source": "*",
+            "detailType": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addTarget": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/IngestFunctionLogs": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "retention": 7,
+        "removalPolicy": "destroy"
+      }
+    }
+  ],
+  "/BackendStack/IngestFunction": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*",
+        "code": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*"
+      }
+    }
+  ],
+  "/BackendStack/ChatFunctionLogs": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "retention": 7,
+        "removalPolicy": "destroy"
+      }
+    }
+  ],
+  "/BackendStack/ChatFunction": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*",
+        "code": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "entry": "*",
+        "projectRoot": "*",
+        "depsLockFilePath": "*",
+        "handler": "*",
+        "runtime": "*",
+        "timeout": "*",
+        "memorySize": "*",
+        "environment": "*",
+        "retryAttempts": "*",
+        "bundling": {
+          "externalModules": "*"
+        },
+        "logGroup": "*"
+      }
+    }
+  ],
+  "/BackendStack/TableName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TableName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:413:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/RawBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RawBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:414:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/KbSourceBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KbSourceBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:415:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/KnowledgeBaseId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:416:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/DataSourceId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DataSourceId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:417:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaProjectArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaProjectArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:418:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaProfileArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaProfileArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:419:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/UserFileBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketDF9C269A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:74:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/BackendStack/UserFileBucket/Policy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "bucket": "*"
+      }
+    }
+  ],
+  "/BackendStack/UserFileBucket/AutoDeleteObjectsCustomResource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/UserFileBucket/AllowBucketNotificationsToBackendStackStartParseFunctionB5157CE2": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketAllowBucketNotificationsToBackendStackStartParseFunctionB5157CE2CCE3DC68"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/BdaOutputBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaOutputBucket04648347"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:78:29)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/BackendStack/BdaOutputBucket/Policy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "bucket": "*"
+      }
+    }
+  ],
+  "/BackendStack/BdaOutputBucket/AutoDeleteObjectsCustomResource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/ProcessedBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ProcessedBucketDE59930C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:82:29)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/BackendStack/ProcessedBucket/Policy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "bucket": "*"
+      }
+    }
+  ],
+  "/BackendStack/ProcessedBucket/AutoDeleteObjectsCustomResource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/KbSourceBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KbSourceBucketF3D74AC4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/BackendStack/KbSourceBucket/Policy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "bucket": "*"
+      }
+    }
+  ],
+  "/BackendStack/KbSourceBucket/AutoDeleteObjectsCustomResource": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/DatebaseTable/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DatebaseTable5F784EF8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:90:27)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/DatebaseTable/ScalingRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/KnowledgeBaseRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseRoleA2B317B9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:168:31)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/KnowledgeBaseRole/DefaultPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/IngestDeadLetterQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestDeadLetterQueue48D59084"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:277:23)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestQueue2280FF4E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:282:25)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunctionLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartParseFunctionLogs84C6DDC0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunction/ServiceRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        },
+        "managedPolicies": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/StartParseFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartParseFunctionA0FA0EC6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunction/EventInvokeConfig": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "function": "*",
+        "onFailure": "*",
+        "onSuccess": "*",
+        "maxEventAge": "*",
+        "retryAttempts": "*"
+      }
+    }
+  ],
+  "/BackendStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        }
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addManagedPolicy": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "/BackendStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
+      ]
+    }
+  ],
+  "/BackendStack/PostProcessFunctionLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PostProcessFunctionLogsC6FB9DFA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/PostProcessFunction/ServiceRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        },
+        "managedPolicies": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/PostProcessFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PostProcessFunction15D406B7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaCompletionRule/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaCompletionRuleDE98C48E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Rule2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:368:31)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaCompletionRule/AllowEventRuleBackendStackPostProcessFunctionF75145ED": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaCompletionRuleAllowEventRuleBackendStackPostProcessFunctionF75145EDED075FF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:378:23)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestFunctionLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestFunctionLogsAF4D8C26"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestFunction/ServiceRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        },
+        "managedPolicies": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/IngestFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestFunction4B2F2EB2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestFunction/SqsEventSource:BackendStackIngestQueueC9FD5D84": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "target": "*",
+        "batchSize": "*",
+        "maxBatchingWindow": "*",
+        "maxConcurrency": "*",
+        "reportBatchItemFailures": "*",
+        "enabled": "*",
+        "eventSourceArn": "*",
+        "filters": "*",
+        "filterEncryption": "*",
+        "metricsConfig": "*",
+        "provisionedPollerConfig": "*"
+      }
+    }
+  ],
+  "/BackendStack/ChatFunctionLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ChatFunctionLogsD0237167"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/ChatFunction/ServiceRole": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "assumedBy": {
+          "principalAccount": "*",
+          "assumeRoleAction": "*"
+        },
+        "managedPolicies": [
+          {
+            "managedPolicyArn": "*"
+          }
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachInlinePolicy": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/ChatFunction/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ChatFunction3D7C447E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/CDKMetadata/Condition": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadataAvailable"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/UserFileBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketPolicyBEC92F8F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:74:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/BackendStack/UserFileBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketAutoDeleteObjectsCustomResourceDC00B302"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/UserFileBucket/Notifications/HandlerPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "statements": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    }
+  ],
+  "/BackendStack/UserFileBucket/Notifications/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketNotifications1C24420C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaOutputBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaOutputBucketPolicy2369BE16"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:78:29)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/BackendStack/BdaOutputBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaOutputBucketAutoDeleteObjectsCustomResource18EA6EAD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/ProcessedBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ProcessedBucketPolicyAB48A58F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:82:29)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/BackendStack/ProcessedBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ProcessedBucketAutoDeleteObjectsCustomResource37647078"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/KbSourceBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KbSourceBucketPolicy0D126654"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
+      ]
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/BackendStack/KbSourceBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KbSourceBucketAutoDeleteObjectsCustomResource3837AF4E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/KnowledgeBaseRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "KnowledgeBaseRoleDefaultPolicyB3F66209"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:176:23)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartParseFunctionServiceRoleEB8044A6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunction/ServiceRole/DefaultPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/StartParseFunction/Code/AssetBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/StartParseFunction/EventInvokeConfig/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartParseFunctionEventInvokeConfig5551FC87"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
+      ]
+    }
+  ],
+  "/BackendStack/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)"
+      ]
+    }
+  ],
+  "/BackendStack/PostProcessFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PostProcessFunctionServiceRole62515337"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/PostProcessFunction/ServiceRole/DefaultPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/PostProcessFunction/Code/AssetBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/IngestFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestFunctionServiceRole55EB4427"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/IngestFunction/ServiceRole/DefaultPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/IngestFunction/Code/AssetBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/IngestFunction/SqsEventSource:BackendStackIngestQueueC9FD5D84/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestFunctionSqsEventSourceBackendStackIngestQueueC9FD5D841CC38555"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addEventSource in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:387:20)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/ChatFunction/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ChatFunctionServiceRole544D50A9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/ChatFunction/ServiceRole/DefaultPolicy": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "attachToRole": [
+          "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/ChatFunction/Code/AssetBucket": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
+    }
+  ],
+  "/BackendStack/UserFileBucket/Notifications/HandlerPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserFileBucketNotificationsHandlerPolicy0D868A58"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)"
+      ]
+    }
+  ],
+  "/BackendStack/StartParseFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "StartParseFunctionServiceRoleDefaultPolicyAEC2CC10"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/PostProcessFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "PostProcessFunctionServiceRoleDefaultPolicy98FF2352"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/IngestFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "IngestFunctionServiceRoleDefaultPolicy8EB1E4A7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/ChatFunction/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ChatFunctionServiceRoleDefaultPolicy8AB4563A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

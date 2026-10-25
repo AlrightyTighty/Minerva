@@ -1,0 +1,90 @@
+{
+  "version": "54.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "displayName": "BackendStack/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-e31788a2": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "bab2ca095b311454db881b3855e110ec9c723e39fa4d14d3192a64fa8b076abd": {
+      "displayName": "StartParseFunction/Code",
+      "source": {
+        "path": "/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/backend",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-a82af7e2": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "bab2ca095b311454db881b3855e110ec9c723e39fa4d14d3192a64fa8b076abd.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "398a85cd2cfb36ff7bb56029fa649a6c34fac9d9d3c404995f15c3b8f1f35573": {
+      "displayName": "PostProcessFunction/Code",
+      "source": {
+        "path": "/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/backend",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-8ca8b548": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "398a85cd2cfb36ff7bb56029fa649a6c34fac9d9d3c404995f15c3b8f1f35573.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "b196b6fcd5c512d3122d6ebf851e9dbf792e2ef1f2bc60741f68694eb4a059a2": {
+      "displayName": "IngestFunction/Code",
+      "source": {
+        "path": "/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/backend",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-4c63dc52": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "b196b6fcd5c512d3122d6ebf851e9dbf792e2ef1f2bc60741f68694eb4a059a2.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "cdb963f64d4802530d64a68e871bb67cc818a0fda1b082954c8cd1974ea30256": {
+      "displayName": "ChatFunction/Code",
+      "source": {
+        "path": "/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/backend",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region-b095e0a9": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "cdb963f64d4802530d64a68e871bb67cc818a0fda1b082954c8cd1974ea30256.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "118986abffdf9fd4b73724c4ba122d203102ad343a715b9a5ccc80c148989157": {
+      "displayName": "BackendStack Template",
+      "source": {
+        "path": "BackendStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region-26db47d1": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "118986abffdf9fd4b73724c4ba122d203102ad343a715b9a5ccc80c148989157.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
