@@ -1,0 +1,2096 @@
+openapi: 3.1.0
+
+info:
+  title: Minerva API
+  version: 0.1.0
+  description: |
+    HTTP API for Minerva, a study assistant. A student has **courses**, uploads **files** (PDFs and images)
+    into a course, and chats with an AI assistant in **threads** that can search and read the course's files.
+
+    This document is the contract between the API and its clients. Everything a client needs is here.
+
+    ## Conventions
+
+    - All request and response bodies are JSON, except the chat reply, which is a server-sent event stream.
+    - Ids (`userId`, `courseId`, `fileId`, `threadId`, `messageId`) are opaque strings (ULIDs). Never parse them.
+    - Timestamps are ISO 8601 strings in UTC, e.g. `2026-10-26T12:00:00.000Z`.
+    - Every error response is `{ "message": string }` (see `Error`). Show `message` to a developer, not to a student,
+      except for the upload errors in `POST /courses/{courseId}/files`, which are written to be shown.
+    - There is no pagination on list endpoints.
+
+    ## Authentication
+
+    A student signs up or signs in with an **email and password**, and gets two tokens:
+
+    - An **access token**, sent as `Authorization: Bearer <accessToken>` on every request except `GET /health` and
+      the sign-in endpoints under `/auth` (`register`, `login`, `refresh`, `logout`). It lasts **15 minutes**
+      (`expiresIn` is in seconds). Treat it as an opaque string: it is a JWT, but nothing in it is for the client.
+    - A **refresh token**, which lasts **30 days** and is used only to get a new pair of tokens from
+      `POST /auth/refresh`. Store it securely (the iOS Keychain), never in logs or user defaults, and never send it
+      anywhere except the `/auth/refresh` and `/auth/logout` endpoints.
+
+    **Keeping a session going**
+
+    1. Sign up with `POST /auth/register` or sign in with `POST /auth/login`. Both return `user`, `accessToken`,
+       `refreshToken` and `expiresIn`.
+    2. When any request returns `401`, call `POST /auth/refresh` with the refresh token, then **retry the original
+       request once** with the new access token. Refreshing a little before `expiresIn` runs out also works.
+    3. **Always replace both tokens with the new pair.** Each refresh token works **once**: the response has a new
+       one, and the old one is dead.
+    4. If the refresh call itself returns `401`, the session is over. Show the sign-in screen.
+    5. `POST /auth/logout` ends the session on the server. Delete the tokens either way.
+
+    **Refresh rules that a client must follow**
+
+    - **Never send two refreshes at the same time.** Keep one in flight and let other requests wait for its result.
+      Two refreshes with the same token race, and one of them fails.
+    - **Do not retry a refresh with the old token** after you have received a new one, or after a request you cannot
+      be sure reached the server. Reusing a token that was already used more than a few seconds ago is treated as a
+      stolen token: the **whole session is revoked** and the student has to sign in again. A retry within about 10
+      seconds is tolerated, and is refused with `401` without ending the session.
+    - A session is one sign-in on one device. Signing in on a second device does not affect the first.
+
+    **Passwords**
+
+    - A password is **10 to 128 characters**, counted as a person counts them (an emoji is one character). There are
+      no rules about which characters it contains. Spaces are allowed.
+    - A student can change theirs with `POST /auth/change-password`. That signs out **every** session, including
+      other devices, and returns a new session for this one.
+    - **There is no password reset**, since the API cannot send email yet. A forgotten password cannot be recovered.
+
+    **Wrong passwords and lockout**
+
+    - `POST /auth/login` says only `Incorrect email or password`, whether the email has an account or not.
+    - After **5** wrong passwords in a row the account is **locked for 15 minutes**: `429`, with the wait in the
+      `Retry-After` header and as `retryAfterSeconds` in the body. Even the right password is refused while locked.
+      A correct password clears the count. Wrong current passwords on `change-password` count too.
+    - Show the wait to the student rather than retrying automatically.
+
+    **Emails** are treated as case-insensitive and are stored lowercase. They are not verified. Registering an email
+    that already has an account returns `409`.
+
+    There is no sign-in with Google, Microsoft or Apple yet.
+
+    ## Study preferences
+
+    A student can write a short text about how they like things explained and how they like to study (for example
+    "Short worked examples first, then a practice question. I find long paragraphs hard to follow."). It is passed to
+    the assistant in **every conversation** the student has, in every course and mode.
+
+    - Read it with `GET /users/me` and change it with `PATCH /users/me`. It is `studyPreferences` on the user.
+    - It is **at most 500 characters**, counted as a person counts them (an emoji is one character), after leading and
+      trailing spaces are removed. Longer text is a `400`, so a client should stop the student at 500 as they type.
+    - Line breaks inside the text are kept.
+    - It is **`null`** when the student has none. Sending `null`, or text that is empty or only spaces, clears it. Users
+      created before this existed also read as `null`.
+    - It takes effect on the next message, even in a conversation that is already open.
+    - It only shapes style (how things are explained). The assistant is told it cannot override its other instructions,
+      so it cannot be used to change what the assistant is willing to do.
+
+    ## Typical flow
+
+    1. `POST /auth/register` once (or `POST /auth/login` later), and keep the tokens it returns.
+    2. `POST /courses` to make a course.
+    3. Upload a file (see "Uploading a file" below), then poll it until it is `ready`.
+    4. Optionally `POST /courses/{courseId}/assignments` to track an assignment, and upload its handouts to it.
+    5. `POST /courses/{courseId}/threads` to start a chat, about a course or about one assignment.
+    6. `POST /courses/{courseId}/threads/{threadId}/messages` to send a message and stream the reply.
+
+    ## Uploading a file
+
+    Files do not go through this API. Uploading is two steps:
+
+    1. `POST /courses/{courseId}/files` with the file's name, type and exact size. The response has the `file`
+       (status `uploaded`) and an `upload` object.
+    2. Send the bytes straight to S3 with a `PUT` to `upload.url`, with the headers in `upload.headers`
+       (`Content-Type`) and a body of **exactly `sizeBytes` bytes**. The URL is signed for that exact type and
+       size, so a different `Content-Type` or length is rejected by S3 with a `403`. **Do not send the
+       `Authorization` header**, or any other header, to S3: the URL already carries its own credentials, and S3
+       refuses a request that has two. The URL expires at `upload.expiresAt` (15 minutes), after which request a new one.
+
+    A successful `PUT` returns `200` with an empty body. Processing then starts on its own.
+
+    What can be uploaded:
+
+    | Kind | Extensions | `mimeType` | Max size | `docType` |
+    | --- | --- | --- | --- | --- |
+    | PDF | `.pdf` | `application/pdf` | 500 MB | `assignment`, `syllabus`, `textbook`, `notes` |
+    | Image | `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif` | `image/png`, `image/jpeg`, `image/webp`, `image/gif` | 3.75 MB (3,932,160 bytes) | `image` only |
+
+    - The `mimeType` must match the extension (a `.jpg` must be `image/jpeg`).
+    - HEIC and other formats are not accepted. Convert photos to JPEG and downscale them to fit 3.75 MB before upload.
+    - There is no upload for plain-text notes. Short notes should be put in the message `text` of a chat message.
+    - Anything that is not a PDF or one of those images is rejected with `400`.
+
+    ## Viewing an uploaded file
+
+    `GET /courses/{courseId}/files/{fileId}/download-url` returns a temporary URL (valid for 15 minutes) that serves
+    the file exactly as it was uploaded, so the student can look at it. The URL is for the original PDF or image,
+    not the processed text. S3 serves it with its real content type and asks to display it inline under its original
+    file name, so it can be opened in a web view or a PDF/image viewer. Like the upload URL, it is an S3 URL, so do
+    not send the `Authorization` header to it. It works for a file in any status, including `uploaded`, `parsing` and `failed`, but
+    a file whose bytes never arrived has nothing to show. Request a new URL once it has expired.
+
+    ## File status
+
+    A file has a `status`. Poll `GET /courses/{courseId}/files/{fileId}` (every few seconds) until it stops changing.
+
+    | Status | Meaning |
+    | --- | --- |
+    | `uploaded` | Registered. Waiting for the bytes to arrive in S3 and be picked up. |
+    | `parsing` | A PDF is being converted to text. Takes seconds to minutes, depending on page count. |
+    | `ingesting` | A PDF's text is being indexed for search. |
+    | `ready` | Usable. Images reach this within seconds of the upload, PDFs after parsing and indexing. |
+    | `failed` | Could not be processed. `error` says why. The student must upload the file again. |
+
+    Only `ready` files can be attached to a chat message or pinned to a thread, and only `ready` files are searched
+    or read by the assistant. A `summary` appears on PDFs once processed. Images never get a `summary`.
+    `pageCount` is set for PDFs.
+
+    ## Assignments
+
+    An **assignment** is something a student has to hand in for a course. It has a title, a description (which can
+    be empty), a due date, a list of files (`fileIds`, its handouts and reference material) and a completion time.
+
+    - Create one with `POST /courses/{courseId}/assignments`. `dueAt` must be an ISO 8601 date (`2026-11-01`) or
+      date-time (`2026-11-01T17:00:00-05:00`). It is returned as UTC (`2026-11-01T22:00:00.000Z`), so a date with no
+      time means midnight UTC.
+    - Lists are sorted soonest due first. `GET /assignments` returns the student's assignments across every course,
+      each with its `courseId`, for a combined to-do view. `GET /courses/{courseId}/assignments` is one course's.
+    - `PATCH` edits the title, description and due date, and marks the assignment completed or open again, in one
+      request. Send only the fields to change. Completing sets `completedAt` to now. Completing an assignment that is
+      already completed keeps its original `completedAt`. Reopening sets `completedAt` back to `null`. Completing or
+      reopening an assignment also completes or reopens its parts in every work plan (see "Work plans").
+    - `DELETE` removes the assignment from every list and from reads (it then returns `404`). Files uploaded to it
+      stay in the course.
+    - Files are uploaded to an assignment with `POST .../assignments/{assignmentId}/files`. It works exactly like
+      "Uploading a file" and returns the same `{ file, upload }`, and the file's id is added to the assignment's
+      `fileIds`. The file is also an ordinary file of the course. `docType` is optional here: it defaults to
+      `assignment` for a PDF and `image` for an image.
+
+    ## Matching calendar courses to Minerva courses
+
+    `POST /courses/match` is for importing assignments from Canvas or another calendar. Calendar items name their
+    course in their own way (`CS3114-F26 Data Structures`, `MATH 2214 - 004`), so the client sends those names and gets
+    back which of the student's Minerva courses each one refers to. An AI decides, and it only ever sees the student's
+    own course names.
+
+    - Send `courseNames`, the distinct course names from the calendar (1 to 50, up to 200 characters each).
+    - The response has one entry per name, **in the same order**, each with the name as it was sent and a `courseId`.
+    - `courseId` is **`null` when there is no confident match**, for example because the course is not in Minerva yet.
+      Handle `null` in the UI (offer to create a course, or let the student pick one) and never guess on the client.
+    - Two names can match the same course. A name that is blank gets `null`.
+    - If the AI is unavailable the response is `502`, and the request can simply be retried.
+
+    ## Work plans
+
+    A **work plan** is an AI-made schedule for some of the student's assignments over a window of time: a list of
+    blocks, each saying what to work on and when. Plans can span courses.
+
+    **Making one:** `POST /work-plans` with the `assignmentIds` the student chose, an `endAt`, and a `timeZone`.
+
+    - `timeZone` is **required** and is an IANA name such as `America/Chicago`. The server does not remember a time
+      zone for the student, so send the device's current one every time. It decides what "evening" means in the plan.
+      The plan keeps the time zone it was made in, but all the times in it are UTC.
+    - `startAt` is optional and defaults to now. The plan covers `startAt` to `endAt`, at most 31 days. Dates are
+      ISO 8601 and are returned as UTC.
+    - The student picks the assignments (1 to 20). Each must exist, not be deleted, and not be completed. An
+      assignment can be from any course, and can be due after the plan ends. One that is already overdue is scheduled
+      as early as possible.
+    - `workPreferences` is optional text (at most 500 characters, or `null`) about what the student wants from *this*
+      plan, such as "nothing after 9pm this week". It is given to the AI together with the student's general
+      `studyPreferences`, and **where the two conflict the work plan preferences win**.
+    - Making a plan calls an AI and can take 10 to 30 seconds, so show a progress indicator. It is a normal request
+      and response, not a stream.
+
+    **What is in a plan:** `items`, in time order. Each item is a block with a `startAt` and an `endAt` (finish by),
+    a `name`, a `description`, and a `kind`:
+
+    - `work` is time to work. It has an `assignment` (`courseId` and `assignmentId`) when it is for one of the chosen
+      assignments, or `null` when it is not, for example "review notes".
+    - `break` is a rest. It has no assignment and cannot be completed.
+
+    The AI may split an assignment into several parts (`Lab 2 (part 1 of 3)`) and add breaks, especially when a lot is
+    due close together. Work for an assignment always ends by its due date, no blocks overlap, and every chosen
+    assignment gets work. If the AI cannot produce a plan that passes these checks, even after a second try, the
+    response is `502` and nothing is stored, so the request can be retried.
+
+    **Completing items:** `PATCH /work-plans/{workPlanId}/items/{itemId}` with `{ "completed": true }` or `false`.
+    It returns the whole plan. Items are addressed by `itemId`, which does not change.
+
+    - When the **last** part of an assignment is completed, the assignment itself is marked completed.
+    - Reopening **any** part of a completed assignment reopens the assignment.
+    - It works in both directions: completing or reopening an assignment elsewhere (`PATCH` on the assignment)
+      completes or reopens all of its parts in every work plan. A part that was already done keeps its original time.
+    - A client that shows both plans and assignments should refetch after changing either.
+    - Plans do not change when an assignment is edited or deleted, and a deleted assignment's items stay in the plan.
+
+    `GET /work-plans/current` is the newest plan, which is the one to show. `GET /work-plans` lists all of them,
+    newest first, and `DELETE` removes one from both (the assignments are unaffected). There is no regeneration: to
+    plan again, make a new plan.
+
+    ## Chat
+
+    A **thread** is one conversation inside a course. It has a `mode` that sets how the assistant behaves:
+
+    | Mode | Behaviour |
+    | --- | --- |
+    | `assignment_help` | Guides with hints and questions, avoids handing over full solutions. |
+    | `exam_prep` | Quizzes the student and explains mistakes. |
+    | `concept_review` | Explains concepts from the basics. |
+
+    The assistant can see the course's `ready` files, and decides itself when to search or read them. A client
+    can also influence what it sees:
+
+    - **Pinned files** (`pinnedResourceIds` on the thread, set at creation): kept in front of the assistant on
+      every turn, as long as they are small enough.
+    - **An assignment** (`assignmentId` on the thread, set at creation): the assistant is told the assignment's title,
+      description and due date on every turn, and the assignment's files are pinned to the thread automatically
+      (together with any `pinnedResourceIds` that were also sent). The title, description and due date are read fresh
+      each turn, so edits to the assignment show up right away. The pinned files are copied when the thread is created,
+      so files added to the assignment later are not pinned to existing threads. If the assignment is deleted, the
+      thread keeps working without it.
+    - **Attachments** (`attachmentFileIds` on a message): put in front of the assistant for that message. An image
+      is only visible to the assistant in the message it is attached to (or if pinned).
+
+    Each message the student sends and each reply is stored in the thread. Messages are read back with
+    `GET .../messages`. The conversation carries on from that stored history, so a client never needs to resend it.
+
+    ### Sending a message and streaming the reply
+
+    `POST /courses/{courseId}/threads/{threadId}/messages` responds with `Content-Type: text/event-stream`.
+    Read the body **incrementally** (for example `URLSession.bytes(for:)`), not by waiting for it to finish: the
+    point of the stream is to show progress. A reply can take up to two minutes.
+
+    The stream is a sequence of server-sent events, each written as:
+
+    ```
+    event: <name>
+    data: <one line of JSON>
+
+    ```
+
+    (a blank line ends each event). The event names, and the JSON in `data`, are:
+
+    | `event` | `data` | Meaning |
+    | --- | --- | --- |
+    | `tool_status` | `{ "message": string }` | The assistant is doing something, for example `Searching course materials for "kruskal"…` or `Reading Lab 2 handout…`. Show it as a transient status line. Several can arrive. |
+    | `text` | `{ "text": string }` | The next piece of the reply. Append it to the reply being shown. |
+    | `done` | `{ "messageId": string, "turn": integer }` | The reply is finished and stored. `messageId` is the assistant message's id. This is the last event. |
+    | `error` | `{ "message": string }` | The reply failed part-way. The `message` is safe to show to the student. This is the last event. |
+
+    Every stream ends with exactly one `done` or one `error`. If the connection ends without either, treat the
+    reply as failed and refetch the messages, since the server may still have finished and stored it.
+
+    After an `error`, the student's message **is** stored but no assistant reply is, so a retry is a new message
+    and the failed one stays in the history.
+
+    Problems that can be detected before the reply starts (unknown thread, an attachment that is not usable,
+    invalid body) are returned as a normal `400` or `404` JSON response, **not** as an event.
+
+    A `text` event can end in the middle of a word, so append the pieces exactly as they arrive, without adding
+    spaces. Each `data` line is always complete, valid JSON.
+
+    ## Errors
+
+    | Status | When |
+    | --- | --- |
+    | `400` | The request is invalid: a bad body or query, or a rule was broken (for example an unsupported file type). |
+    | `401` | The access token is missing, invalid or expired (refresh it, see "Authentication"). On the `/auth` endpoints: wrong email or password, or a refresh token that cannot be used. The message never says which part was wrong. |
+    | `403` | `POST /auth/change-password` only: the current password is wrong. |
+    | `404` | The thing does not exist, **or belongs to another user**. The two are deliberately not distinguished. |
+    | `409` | `POST /auth/register` only: the email already has an account. |
+    | `429` | Either the account is locked after too many wrong passwords (`/auth/login`, `/auth/change-password`: has `Retry-After` and `retryAfterSeconds`), or the rate limit was hit (`{"message":"Too Many Requests"}`). Back off and retry. |
+    | `500` | Unexpected server error (`{"message":"Internal server error"}`). |
+    | `502` | `POST /courses/match` and `POST /work-plans` only: the AI could not do the job. Retry later. |
+
+    Request bodies are checked strictly and are not converted: a number where text is expected (`"dueAt": 20261101`),
+    or the text `"true"` where a boolean is expected, is a `400`. Fields that are not in the schema are ignored.
+
+    ## Not available yet
+
+    There are no endpoints to delete, rename or archive courses, files or threads, and no way to edit a thread after
+    creating it. Assignments can be edited and deleted, but a file cannot be removed from one. There is no password
+    reset, no email verification, no way to change an email or a name, no way to delete an account, and no sign-in
+    with Google, Microsoft or Apple. Do not build UI that assumes the missing ones.
+
+servers:
+  - url: https://{apiId}.execute-api.us-east-2.amazonaws.com/prod
+    description: Deployed API. The id comes from the stack's `ApiUrl` output, which already includes `/prod`.
+    variables:
+      apiId:
+        default: REPLACE_WITH_API_ID
+  - url: http://localhost:3000
+    description: Local development server.
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Users
+  - name: Courses
+  - name: Files
+  - name: Assignments
+  - name: Work plans
+  - name: Threads
+  - name: Chat
+
+security:
+  - BearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Check the API is up
+      security: []
+      operationId: getHealth
+      responses:
+        "200":
+          description: The API is up.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    const: ok
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Create an account and sign in
+      description: |
+        Needs no token. Creates the account and returns a new session, so the student is signed in straight away.
+        See "Authentication" in the API description.
+      security: []
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: The account was created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "400":
+          description: |
+            The request is invalid. The messages for the cases a student can fix are `Enter a valid email address`,
+            `Password must be between 10 and 128 characters`, and `First name must be between 1 and 100 characters`
+            (or last name).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: The email already has an account.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: An account with this email already exists
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Sign in with an email and password
+      description: |
+        Needs no token. The error is the same for a wrong password and for an email with no account. After 5 wrong
+        passwords in a row the account is locked for 15 minutes (`429`).
+      security: []
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Signed in. A new session was started.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSession"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: Wrong email or password. The message is always the same.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: Incorrect email or password
+        "429":
+          $ref: "#/components/responses/AccountLocked"
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Swap a refresh token for a new access token and refresh token
+      description: |
+        Needs no access token, since the access token is what has just expired. The refresh token works **once**:
+        replace both tokens with the ones returned. Using a token that was already used, more than about 10 seconds
+        ago, ends the whole session. See "Refresh rules that a client must follow" in the API description.
+      security: []
+      operationId: refreshSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "200":
+          description: A new pair of tokens.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPair"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          description: |
+            The refresh token cannot be used: it is wrong, expired, already used or revoked. The message is always the
+            same. The session is over, so show the sign-in screen.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: Invalid or expired refresh token
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: End the session
+      description: |
+        Revokes the session the refresh token belongs to, so no token from it can be refreshed again. Needs no access
+        token, so a student can sign out with an expired one. It always succeeds, even for a token it does not
+        recognise. The access token itself stays valid until it expires (at most 15 minutes), so delete it too.
+      security: []
+      operationId: logout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+      responses:
+        "204":
+          description: The session was ended. There is no body.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /auth/change-password:
+    post:
+      tags: [Auth]
+      summary: Change the signed-in user's password
+      description: |
+        Signs out **every** session, including other devices, then returns a new session for this one, which replaces
+        the tokens the client holds. Wrong current passwords count toward the 5-attempt lockout.
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "200":
+          description: The password was changed. Replace both tokens with these.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPair"
+        "400":
+          description: The new password is not acceptable (`Password must be between 10 and 128 characters`), or the body is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: |
+            The current password is wrong. This is a `403` and not a `401`, so a client does not take it for an expired
+            session and try to refresh.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: Current password is incorrect
+        "429":
+          $ref: "#/components/responses/AccountLocked"
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get the signed-in user's profile
+      description: Includes `studyPreferences`. See "Study preferences" in the API description.
+      operationId: getMe
+      responses:
+        "200":
+          description: The user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      tags: [Users]
+      summary: Change the signed-in user's study preferences
+      description: |
+        Sets how the student likes things explained and how they like to study. It is passed to the assistant in
+        every conversation. Send `null`, or empty text, to clear it. See "Study preferences" in the API description.
+      operationId: updateMe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileRequest"
+            examples:
+              set:
+                value:
+                  studyPreferences: Short worked examples first, then a practice question.
+              clear:
+                value:
+                  studyPreferences: null
+      responses:
+        "200":
+          description: The updated user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: |
+            The request is invalid: `studyPreferences` is missing, is not text or `null`, or is longer than 500
+            characters.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /courses:
+    post:
+      tags: [Courses]
+      summary: Create a course
+      operationId: createCourse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCourseRequest"
+      responses:
+        "201":
+          description: The course was created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    get:
+      tags: [Courses]
+      summary: List the user's courses
+      operationId: listCourses
+      responses:
+        "200":
+          description: The user's courses, which can be an empty list.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [courses]
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Course"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /courses/{courseId}/files:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+    post:
+      tags: [Files]
+      summary: Register a file and get a URL to upload it to
+      description: |
+        Registers the file (status `uploaded`) and returns a presigned S3 URL. The client then uploads the bytes
+        to that URL. See "Uploading a file" in the API description for the exact rules.
+      operationId: createFileUpload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFileRequest"
+            examples:
+              pdf:
+                summary: A textbook chapter
+                value:
+                  filename: greedy-algorithms.pdf
+                  mimeType: application/pdf
+                  sizeBytes: 2048576
+                  docType: textbook
+              image:
+                summary: A photo of a whiteboard
+                value:
+                  filename: whiteboard.jpg
+                  mimeType: image/jpeg
+                  sizeBytes: 912344
+                  docType: image
+                  title: Whiteboard from lecture 4
+      responses:
+        "201":
+          description: The file was registered. Upload the bytes to `upload.url`.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [file, upload]
+                properties:
+                  file:
+                    $ref: "#/components/schemas/File"
+                  upload:
+                    $ref: "#/components/schemas/UploadTarget"
+        "400":
+          description: |
+            The request is invalid, or the upload is not acceptable. Upload errors have these messages:
+
+            - `Unsupported file type: only PDF and image (PNG, JPEG, WebP, GIF) files can be uploaded`
+            - `File type does not match its extension`
+            - `An image must have docType "image"`
+            - `Only images can have docType "image"`
+            - `File is empty`
+            - `File is too large`
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    get:
+      tags: [Files]
+      summary: List the course's files
+      description: Includes files in every status, so a file still processing or failed appears here too.
+      operationId: listFiles
+      responses:
+        "200":
+          description: The course's files.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [files]
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/File"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/files/{fileId}:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [Files]
+      summary: Get one file
+      description: Poll this to follow a file through its `status`.
+      operationId: getFile
+      responses:
+        "200":
+          description: The file.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/File"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/files/{fileId}/download-url:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/FileId"
+    get:
+      tags: [Files]
+      summary: Get a temporary URL to view the uploaded file
+      description: |
+        Returns a presigned S3 URL, valid for 15 minutes, that serves the original upload inline. See "Viewing an
+        uploaded file" in the API description. Do not send the `Authorization` header to the returned URL.
+      operationId: getFileDownloadUrl
+      responses:
+        "200":
+          description: The URL and when it stops working.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadUrl"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/match:
+    post:
+      tags: [Courses]
+      summary: Match calendar course names to the student's courses
+      description: |
+        For importing assignments from Canvas or another calendar. Returns, for each name, the Minerva course it
+        refers to, or `null` when there is no confident match. See "Matching calendar courses to Minerva courses" in
+        the API description.
+      operationId: matchCourses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CourseMatchRequest"
+            example:
+              courseNames: ["CS3114-F26 Data Structures", "ENGL 1105 - Section 12"]
+      responses:
+        "200":
+          description: One match per name, in the order sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseMatchResponse"
+              example:
+                matches:
+                  - courseName: CS3114-F26 Data Structures
+                    courseId: 01M5V3JETGK5Q0XWZS91QGS02T
+                  - courseName: ENGL 1105 - Section 12
+                    courseId: null
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "502":
+          description: The AI that does the matching is unavailable. The request can be retried.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: Course matching is unavailable right now. Please try again.
+
+  /work-plans:
+    post:
+      tags: [Work plans]
+      summary: Make a work plan for some assignments
+      description: |
+        Asks an AI to schedule the chosen assignments between `startAt` and `endAt`, and stores the result. It can
+        take 10 to 30 seconds. See "Work plans" in the API description.
+      operationId: createWorkPlan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWorkPlanRequest"
+            example:
+              assignmentIds: ["01M5V8A0C5WJ2H4Q9XK1B7D3EF", "01M5V8B2N6TR3Y5S0ZM2C8E4GH"]
+              endAt: "2026-11-06T23:00:00-06:00"
+              timeZone: America/Chicago
+              workPreferences: Nothing after 9pm this week, and keep Sunday free.
+      responses:
+        "201":
+          description: The plan was made and stored.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkPlan"
+        "400":
+          description: |
+            The request is invalid: an unknown time zone, an end that is not after the start or is in the past, a
+            plan longer than 31 days, no assignments or more than 20, work preferences over 500 characters, or an
+            assignment that does not exist, is deleted or is already completed (the message names it).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "502":
+          description: |
+            The AI could not produce a valid plan, even after a second try. Nothing was stored. The request can be
+            retried.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: A work plan could not be made right now. Please try again.
+    get:
+      tags: [Work plans]
+      summary: List the user's work plans
+      description: Newest first.
+      operationId: listWorkPlans
+      responses:
+        "200":
+          description: The plans, which can be an empty list.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [workPlans]
+                properties:
+                  workPlans:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkPlan"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /work-plans/current:
+    get:
+      tags: [Work plans]
+      summary: Get the newest work plan
+      description: The one to show. Returns `404` when the user has not made a plan yet.
+      operationId: getCurrentWorkPlan
+      responses:
+        "200":
+          description: The newest plan that has not been deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkPlan"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /work-plans/{workPlanId}:
+    parameters:
+      - $ref: "#/components/parameters/WorkPlanId"
+    get:
+      tags: [Work plans]
+      summary: Get one work plan
+      operationId: getWorkPlan
+      responses:
+        "200":
+          description: The plan.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkPlan"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [Work plans]
+      summary: Delete a work plan
+      description: The plan disappears from every list and read. The assignments are not changed.
+      operationId: deleteWorkPlan
+      responses:
+        "204":
+          description: The plan was deleted. There is no body.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /work-plans/{workPlanId}/items/{itemId}:
+    parameters:
+      - $ref: "#/components/parameters/WorkPlanId"
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
+    patch:
+      tags: [Work plans]
+      summary: Mark a work plan item completed, or open again
+      description: |
+        Returns the whole plan. Completing the last part of an assignment also completes the assignment, and reopening
+        any part of a completed assignment reopens it. A break cannot be completed (`400`). Completing an item that is
+        already completed keeps its original time.
+      operationId: updateWorkPlanItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateWorkPlanItemRequest"
+            example:
+              completed: true
+      responses:
+        "200":
+          description: The plan with the item updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkPlan"
+        "400":
+          description: The request is invalid, or the item is a break.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /assignments:
+    get:
+      tags: [Assignments]
+      summary: List all of the user's assignments, across courses
+      description: Soonest due first. Each assignment says which course it belongs to.
+      operationId: listAllAssignments
+      responses:
+        "200":
+          description: The assignments, which can be an empty list.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [assignments]
+                properties:
+                  assignments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Assignment"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /courses/{courseId}/assignments:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+    post:
+      tags: [Assignments]
+      summary: Create an assignment
+      operationId: createAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssignmentRequest"
+            example:
+              title: "Lab 2: Greedy scheduling"
+              description: Implement interval scheduling and prove it is optimal.
+              dueAt: "2026-11-01T17:00:00-05:00"
+      responses:
+        "201":
+          description: The assignment was created, open and with no files.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+        "400":
+          description: The request is invalid, for example a blank title or a `dueAt` that is not a valid date.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    get:
+      tags: [Assignments]
+      summary: List the course's assignments
+      description: Soonest due first, completed ones included.
+      operationId: listAssignments
+      responses:
+        "200":
+          description: The course's assignments, which can be an empty list.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [assignments]
+                properties:
+                  assignments:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Assignment"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/assignments/{assignmentId}:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/AssignmentId"
+    get:
+      tags: [Assignments]
+      summary: Get one assignment
+      operationId: getAssignment
+      responses:
+        "200":
+          description: The assignment.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [Assignments]
+      summary: Edit an assignment, or mark it completed or open
+      description: |
+        Send only the fields to change, and at least one. Returns the assignment as it is afterwards.
+        Setting `completed` to `true` on an assignment that is already completed leaves its `completedAt` unchanged.
+      operationId: updateAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAssignmentRequest"
+            examples:
+              complete:
+                value:
+                  completed: true
+              reschedule:
+                value:
+                  dueAt: "2026-11-08"
+      responses:
+        "200":
+          description: The updated assignment.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Assignment"
+        "400":
+          description: |
+            The request is invalid: nothing to change, a blank title, or a `dueAt` that is not a valid date.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags: [Assignments]
+      summary: Delete an assignment
+      description: |
+        The assignment disappears from every list and read. Files uploaded to it stay in the course. Deleting an
+        assignment that is already deleted returns `404`.
+      operationId: deleteAssignment
+      responses:
+        "204":
+          description: The assignment was deleted. There is no body.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/assignments/{assignmentId}/files:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/AssignmentId"
+    post:
+      tags: [Assignments]
+      summary: Upload a file to an assignment
+      description: |
+        Works exactly like `POST /courses/{courseId}/files` (see "Uploading a file" in the API description) and
+        returns the same response, and also adds the file to the assignment's `fileIds`. `docType` is optional: it
+        defaults to `assignment` for a PDF and `image` for an image.
+      operationId: createAssignmentFileUpload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssignmentFileRequest"
+            example:
+              filename: lab2-handout.pdf
+              mimeType: application/pdf
+              sizeBytes: 482113
+      responses:
+        "201":
+          description: The file was registered and linked. Upload the bytes to `upload.url`.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [file, upload]
+                properties:
+                  file:
+                    $ref: "#/components/schemas/File"
+                  upload:
+                    $ref: "#/components/schemas/UploadTarget"
+        "400":
+          description: The request is invalid, or the upload is not acceptable. The messages are the same as for `POST /courses/{courseId}/files`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/threads:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+    post:
+      tags: [Threads]
+      summary: Start a chat thread in a course
+      operationId: createThread
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateThreadRequest"
+      responses:
+        "201":
+          description: The thread was created. It starts empty, with `turnCount` 0.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+        "400":
+          description: |
+            The request is invalid, or a pinned file cannot be used (for example `Pinned file "f9" not found`).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    get:
+      tags: [Threads]
+      summary: List the course's threads
+      description: Most recently active first.
+      operationId: listThreads
+      responses:
+        "200":
+          description: The course's threads.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [threads]
+                properties:
+                  threads:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Thread"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/threads/{threadId}:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/ThreadId"
+    get:
+      tags: [Threads]
+      summary: Get one thread
+      operationId: getThread
+      responses:
+        "200":
+          description: The thread.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Thread"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /courses/{courseId}/threads/{threadId}/messages:
+    parameters:
+      - $ref: "#/components/parameters/CourseId"
+      - $ref: "#/components/parameters/ThreadId"
+    get:
+      tags: [Chat]
+      summary: Read a thread's messages
+      description: |
+        The latest messages of the thread, **oldest first**, so they can be shown top to bottom. Use this to
+        reopen a conversation. Only the text and attachments of each message are returned.
+      operationId: listMessages
+      parameters:
+        - name: limit
+          in: query
+          description: How many of the latest messages to return.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 50
+      responses:
+        "200":
+          description: The messages.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [messages]
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Message"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      tags: [Chat]
+      summary: Send a message and stream the assistant's reply
+      description: |
+        Stores the student's message, then streams the assistant's reply as server-sent events. Read the body
+        incrementally. The event names and payloads are described in "Sending a message and streaming the reply"
+        in the API description, and the payload shapes are in the `ChatEvent*` schemas.
+
+        Validation problems (unknown thread, an attachment that is missing, not `ready`, or from another course)
+        return `400` or `404` as a normal JSON response, before any events.
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendMessageRequest"
+            examples:
+              plain:
+                value:
+                  text: What is a greedy algorithm?
+              withAttachment:
+                value:
+                  text: Can you check my answer to problem 3?
+                  attachmentFileIds: ["01M5V59K05W760103SN32HXF09"]
+      responses:
+        "200":
+          description: |
+            The reply, as a stream of server-sent events that ends with `done` or `error`.
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                const: no-cache
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: |
+                  A stream of server-sent events. Each event has an `event:` line naming it and a single `data:`
+                  line of JSON, followed by a blank line. See `ChatEventToolStatus`, `ChatEventText`,
+                  `ChatEventDone` and `ChatEventError` for the `data` of each event.
+              example: |
+                event: tool_status
+                data: {"message":"Searching course materials for \"greedy algorithms\"…"}
+
+                event: text
+                data: {"text":"A greedy algorithm builds a solution "}
+
+                event: text
+                data: {"text":"one step at a time, always taking the best option available."}
+
+                event: done
+                data: {"messageId":"01M5V6Q0G4KJ3P9TQ0C4S7B2ZD","turn":1}
+
+        "400":
+          description: |
+            The body is invalid, or an attachment cannot be used (for example `Attachment "f9" is not available`).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        The access token from `/auth/register`, `/auth/login`, `/auth/refresh` or `/auth/change-password`. It lasts
+        15 minutes. See "Authentication" in the API description.
+
+  parameters:
+    CourseId:
+      name: courseId
+      in: path
+      required: true
+      schema:
+        type: string
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: string
+    ThreadId:
+      name: threadId
+      in: path
+      required: true
+      schema:
+        type: string
+    AssignmentId:
+      name: assignmentId
+      in: path
+      required: true
+      schema:
+        type: string
+    WorkPlanId:
+      name: workPlanId
+      in: path
+      required: true
+      schema:
+        type: string
+
+  responses:
+    BadRequest:
+      description: The request is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    AccountLocked:
+      description: |
+        Too many wrong passwords. The account is locked for a while, even for the right password. Wait the number of
+        seconds in `Retry-After` and show that to the student.
+      headers:
+        Retry-After:
+          description: Seconds until the account can be tried again.
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [message, retryAfterSeconds]
+            properties:
+              message:
+                type: string
+              retryAfterSeconds:
+                type: integer
+          example:
+            message: Too many failed attempts. Try again later.
+            retryAfterSeconds: 600
+    Unauthorized:
+      description: |
+        The access token is missing, invalid or expired. Call `POST /auth/refresh`, then retry once. The response
+        has a `WWW-Authenticate: Bearer` header and the same message whatever was wrong.
+      headers:
+        WWW-Authenticate:
+          schema:
+            type: string
+            const: Bearer
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: |
+        The course, file or thread does not exist, or belongs to another user. These are not distinguished.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+      example:
+        message: Course "01M5V3JETGK5Q0XWZS91QGS02T" not found
+
+    RegisterRequest:
+      type: object
+      required: [email, password, firstName, lastName]
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          maxLength: 254
+          description: Case-insensitive, and stored lowercase. Not verified.
+        password:
+          type: string
+          minLength: 10
+          maxLength: 128
+          description: 10 to 128 characters, counted as a person counts them. Any characters are allowed.
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 100
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+          maxLength: 254
+        password:
+          type: string
+          maxLength: 128
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      additionalProperties: false
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+          maxLength: 1024
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      additionalProperties: false
+      properties:
+        currentPassword:
+          type: string
+          maxLength: 128
+        newPassword:
+          type: string
+          minLength: 10
+          maxLength: 128
+          description: 10 to 128 characters.
+
+    TokenPair:
+      type: object
+      required: [accessToken, refreshToken, expiresIn]
+      properties:
+        accessToken:
+          type: string
+          description: "Send as `Authorization: Bearer <accessToken>`. Opaque to the client."
+        refreshToken:
+          type: string
+          description: |
+            Used once, to get the next pair. Replace the one you hold with this one. Keep it in the Keychain, and send
+            it only to `/auth/refresh` and `/auth/logout`.
+        expiresIn:
+          type: integer
+          description: How many seconds the access token lasts (900).
+
+    AuthSession:
+      description: The user, with a new session.
+      allOf:
+        - $ref: "#/components/schemas/TokenPair"
+        - type: object
+          required: [user]
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+
+    User:
+      type: object
+      required: [userId, email, firstName, lastName, studyPreferences, createdAt]
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+          description: Lowercase.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        studyPreferences:
+          type:
+            - string
+            - "null"
+          maxLength: 500
+          description: |
+            How the student likes things explained and how they like to study, in their own words. `null` when they
+            have none. It is passed to the assistant in every conversation.
+        createdAt:
+          type: string
+          format: date-time
+
+    UpdateProfileRequest:
+      type: object
+      required: [studyPreferences]
+      additionalProperties: false
+      properties:
+        studyPreferences:
+          type:
+            - string
+            - "null"
+          maxLength: 500
+          description: |
+            At most 500 characters. `null`, empty text and text of only spaces all clear it. Surrounding spaces are
+            removed and line breaks inside are kept.
+
+    CreateCourseRequest:
+      type: object
+      required: [name]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+
+    Course:
+      type: object
+      required: [courseId, name, createdAt]
+      properties:
+        courseId:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    DocType:
+      type: string
+      enum: [assignment, syllabus, textbook, notes, image]
+      description: |
+        What kind of material a file is. `image` is for image uploads and only images can have it. The other four
+        are for PDFs. The assistant treats a `textbook` as large reference material that it searches rather than
+        reads whole.
+
+    FileStatus:
+      type: string
+      enum: [uploaded, parsing, ingesting, ready, failed]
+      description: See "File status" in the API description.
+
+    CreateFileRequest:
+      type: object
+      required: [filename, mimeType, sizeBytes, docType]
+      additionalProperties: false
+      properties:
+        filename:
+          type: string
+          minLength: 1
+          description: The original file name. Its extension decides how the file is handled.
+        mimeType:
+          type: string
+          description: Must match the extension, for example `application/pdf` or `image/png`.
+        sizeBytes:
+          type: integer
+          description: The exact size of the file in bytes. The upload must be exactly this long.
+          minimum: 1
+        docType:
+          $ref: "#/components/schemas/DocType"
+        title:
+          type: string
+          description: A display name. Defaults to the file name without its extension.
+
+    File:
+      type: object
+      required:
+        [fileId, courseId, originalFilename, title, docType, mimeType, sizeBytes, status, createdAt, updatedAt]
+      properties:
+        fileId:
+          type: string
+        courseId:
+          type: string
+        originalFilename:
+          type: string
+        title:
+          type: string
+        docType:
+          $ref: "#/components/schemas/DocType"
+        summary:
+          type: string
+          description: One or two sentences about the file. Present on PDFs once processed, never on images.
+        mimeType:
+          type: string
+        sizeBytes:
+          type: integer
+        status:
+          $ref: "#/components/schemas/FileStatus"
+        error:
+          type: string
+          description: Why processing failed. Only present when `status` is `failed`.
+        pageCount:
+          type: integer
+          description: Number of pages. Present on PDFs once processed.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UploadTarget:
+      type: object
+      required: [url, method, headers, expiresAt]
+      description: Where and how to upload the file's bytes. This is an S3 URL, not an endpoint of this API.
+      properties:
+        url:
+          type: string
+          format: uri
+          description: A presigned S3 URL.
+        method:
+          type: string
+          const: PUT
+        headers:
+          type: object
+          description: Headers that must be sent with the PUT, exactly as given.
+          additionalProperties:
+            type: string
+          example:
+            Content-Type: application/pdf
+        expiresAt:
+          type: string
+          format: date-time
+          description: The URL stops working after this. Request a new one if it has passed.
+
+    ThreadMode:
+      type: string
+      enum: [assignment_help, exam_prep, concept_review]
+
+    CreateThreadRequest:
+      type: object
+      required: [mode]
+      additionalProperties: false
+      properties:
+        mode:
+          $ref: "#/components/schemas/ThreadMode"
+        title:
+          type: string
+          description: A display name. Defaults to `New chat`.
+        assignmentId:
+          type: string
+          description: |
+            Makes this a thread about an assignment of the same course: the assistant is told its title, description
+            and due date, and its files are pinned automatically. A missing or deleted assignment is a `404`.
+        pinnedResourceIds:
+          type: array
+          description: |
+            Ids of files in the course to keep in front of the assistant on every turn, in addition to an
+            assignment's files. A file that does not exist is a `400`.
+          items:
+            type: string
+
+    Thread:
+      type: object
+      required: [threadId, courseId, title, mode, turnCount, pinnedResourceIds, createdAt, updatedAt]
+      properties:
+        threadId:
+          type: string
+        courseId:
+          type: string
+        title:
+          type: string
+        mode:
+          $ref: "#/components/schemas/ThreadMode"
+        assignmentId:
+          type: string
+          description: Present when the thread is about an assignment.
+        turnCount:
+          type: integer
+          description: How many question-and-answer turns have completed in this thread.
+        pinnedResourceIds:
+          type: array
+          description: Includes the assignment's files at the time the thread was created, if it is about one.
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          description: Changes when a turn completes. Threads are listed by this, newest first.
+
+    SendMessageRequest:
+      type: object
+      required: [text]
+      additionalProperties: false
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 20000
+        attachmentFileIds:
+          type: array
+          description: |
+            Files to put in front of the assistant for this message. Each must be a `ready` file in this course.
+            An image attached here is visible to the assistant for this message only.
+          maxItems: 5
+          items:
+            type: string
+
+    Message:
+      type: object
+      required: [messageId, role, turn, contentBlocks]
+      properties:
+        messageId:
+          type: string
+          description: Sorts in the order the messages were created.
+        role:
+          type: string
+          enum: [user, assistant]
+        turn:
+          type: integer
+          description: The turn this message belongs to. A student's message and its reply share a turn.
+        contentBlocks:
+          type: array
+          description: In order. A student message is its text followed by any attachments.
+          items:
+            $ref: "#/components/schemas/ContentBlock"
+
+    ContentBlock:
+      oneOf:
+        - $ref: "#/components/schemas/TextBlock"
+        - $ref: "#/components/schemas/AttachmentBlock"
+      discriminator:
+        propertyName: type
+        mapping:
+          text: "#/components/schemas/TextBlock"
+          resourceRef: "#/components/schemas/AttachmentBlock"
+
+    TextBlock:
+      type: object
+      required: [type, text]
+      properties:
+        type:
+          type: string
+          const: text
+        text:
+          type: string
+
+    AttachmentBlock:
+      type: object
+      required: [type, resourceId]
+      description: A file that was attached to the message. Look the file up by `resourceId` (a `fileId`).
+      properties:
+        type:
+          type: string
+          const: resourceRef
+        resourceId:
+          type: string
+
+    ChatEventToolStatus:
+      type: object
+      description: The `data` of a `tool_status` event.
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Reading Lab 2 handout…
+
+    ChatEventText:
+      type: object
+      description: The `data` of a `text` event.
+      required: [text]
+      properties:
+        text:
+          type: string
+
+    ChatEventDone:
+      type: object
+      description: The `data` of the final `done` event.
+      required: [messageId, turn]
+      properties:
+        messageId:
+          type: string
+          description: The id of the stored assistant message.
+        turn:
+          type: integer
+
+    ChatEventError:
+      type: object
+      description: The `data` of the final `error` event.
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: The assistant could not respond. Please try again.
+
+    CreateWorkPlanRequest:
+      type: object
+      required: [assignmentIds, endAt, timeZone]
+      additionalProperties: false
+      properties:
+        assignmentIds:
+          type: array
+          description: The assignments to plan, which can be from different courses. Each must be active (not deleted or completed).
+          minItems: 1
+          maxItems: 20
+          items:
+            type: string
+        endAt:
+          type: string
+          description: |
+            When the plan ends, as an ISO 8601 date-time (`2026-11-06T23:00:00-06:00`). Must be in the future and after
+            `startAt`, and at most 31 days after it.
+        timeZone:
+          type: string
+          description: |
+            An IANA time zone name such as `America/Chicago` or `Europe/Paris`. Send the device's current one every
+            time, since the server does not store it.
+        startAt:
+          type: string
+          description: When the plan starts, as an ISO 8601 date or date-time. Defaults to now.
+        workPreferences:
+          type:
+            - string
+            - "null"
+          maxLength: 500
+          description: |
+            What the student wants from this plan in particular. Given to the AI with the student's general study
+            preferences, and wins where the two conflict. Blank text is the same as `null`.
+
+    WorkPlan:
+      type: object
+      required: [workPlanId, startAt, endAt, timeZone, workPreferences, items, createdAt]
+      properties:
+        workPlanId:
+          type: string
+        startAt:
+          type: string
+          format: date-time
+          description: The start of the window the plan covers, in UTC.
+        endAt:
+          type: string
+          format: date-time
+          description: The end of the window, in UTC.
+        timeZone:
+          type: string
+          description: The time zone the plan was made in. Every time in the plan is UTC, so use this to show them.
+        workPreferences:
+          type:
+            - string
+            - "null"
+          description: What the student asked for this plan, or `null`.
+        items:
+          type: array
+          description: The blocks of the plan, in time order.
+          items:
+            $ref: "#/components/schemas/WorkPlanItem"
+        createdAt:
+          type: string
+          format: date-time
+
+    WorkPlanItem:
+      type: object
+      required: [itemId, kind, name, description, startAt, endAt, assignment, completedAt]
+      properties:
+        itemId:
+          type: string
+          description: Stable. Use it to complete the item.
+        kind:
+          type: string
+          enum: [work, break]
+        name:
+          type: string
+          description: For example `Lab 2 (part 1 of 3)` or `Break`.
+        description:
+          type: string
+        startAt:
+          type: string
+          format: date-time
+          description: When the block starts, in UTC.
+        endAt:
+          type: string
+          format: date-time
+          description: When the block should be finished by, in UTC. For work on an assignment, never after its due date.
+        assignment:
+          description: The assignment this works on. `null` for a break, and for work that is not for an assignment.
+          oneOf:
+            - type: "null"
+            - type: object
+              required: [courseId, assignmentId]
+              properties:
+                courseId:
+                  type: string
+                assignmentId:
+                  type: string
+        completedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+          description: When the item was completed, or `null`. Always `null` for a break.
+
+    UpdateWorkPlanItemRequest:
+      type: object
+      required: [completed]
+      additionalProperties: false
+      properties:
+        completed:
+          type: boolean
+          description: "`true` marks it completed (now), `false` marks it open again."
+
+    Assignment:
+      type: object
+      required: [assignmentId, courseId, title, description, dueAt, fileIds, completedAt, createdAt]
+      properties:
+        assignmentId:
+          type: string
+        courseId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          description: Empty when none was given.
+        dueAt:
+          type: string
+          format: date-time
+          description: Always UTC, for example `2026-11-01T22:00:00.000Z`.
+        fileIds:
+          type: array
+          description: Ids of the files uploaded to this assignment. Look them up with the files endpoints.
+          items:
+            type: string
+        completedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+          description: When the assignment was marked completed, or `null` while it is open.
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateAssignmentRequest:
+      type: object
+      required: [title, dueAt]
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          description: Must not be blank. Surrounding spaces are trimmed.
+        description:
+          type: string
+          description: Defaults to empty.
+        dueAt:
+          type: string
+          description: An ISO 8601 date (`2026-11-01`) or date-time (`2026-11-01T17:00:00-05:00`).
+
+    UpdateAssignmentRequest:
+      type: object
+      minProperties: 1
+      additionalProperties: false
+      description: Send only the fields to change.
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          description: Send an empty string to clear it.
+        dueAt:
+          type: string
+          description: An ISO 8601 date or date-time.
+        completed:
+          type: boolean
+          description: "`true` marks it completed (now), `false` marks it open again."
+
+    CreateAssignmentFileRequest:
+      type: object
+      required: [filename, mimeType, sizeBytes]
+      additionalProperties: false
+      description: Like `CreateFileRequest`, except that `docType` is optional.
+      properties:
+        filename:
+          type: string
+          minLength: 1
+        mimeType:
+          type: string
+          minLength: 1
+        sizeBytes:
+          type: integer
+          minimum: 1
+        docType:
+          $ref: "#/components/schemas/DocType"
+        title:
+          type: string
+
+    DownloadUrl:
+      type: object
+      required: [url, expiresAt]
+      properties:
+        url:
+          type: string
+          format: uri
+          description: A presigned S3 URL that serves the original upload inline. Do not send the `Authorization` header to it.
+        expiresAt:
+          type: string
+          format: date-time
+          description: The URL stops working after this. Request a new one if it has passed.
+
+    CourseMatchRequest:
+      type: object
+      required: [courseNames]
+      additionalProperties: false
+      properties:
+        courseNames:
+          type: array
+          description: Course names taken from a calendar or Canvas, as they appear there.
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 200
+
+    CourseMatch:
+      type: object
+      required: [courseName, courseId]
+      properties:
+        courseName:
+          type: string
+          description: The name exactly as it was sent.
+        courseId:
+          type:
+            - string
+            - "null"
+          description: The id of the matching Minerva course, or `null` when there is no confident match.
+
+    CourseMatchResponse:
+      type: object
+      required: [matches]
+      properties:
+        matches:
+          type: array
+          description: One entry per name sent, in the same order.
+          items:
+            $ref: "#/components/schemas/CourseMatch"

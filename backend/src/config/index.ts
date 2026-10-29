@@ -1,12 +1,11 @@
 import type { AppConfig, AppEnv } from "./types.js";
 import { localConfig } from "./environments/local.js";
-import { developmentConfig } from "./environments/development.js";
-import { productionConfig } from "./environments/production.js";
+import { createProductionConfig } from "./environments/production.js";
 
-const configsByEnv: Record<AppEnv, AppConfig> = {
-  local: localConfig,
-  development: developmentConfig,
-  production: productionConfig,
+// built lazily: production needs the deployed environment variables, which do not exist when running locally
+const configsByEnv: Record<AppEnv, () => AppConfig> = {
+  local: () => localConfig,
+  production: () => createProductionConfig(),
 };
 
 function resolveEnv(): AppEnv {
@@ -17,6 +16,6 @@ function resolveEnv(): AppEnv {
   throw new Error(`Unknown APP_ENV "${raw}". Expected one of: ${Object.keys(configsByEnv).join(", ")}`);
 }
 
-export const config: AppConfig = configsByEnv[resolveEnv()];
+export const config: AppConfig = configsByEnv[resolveEnv()]();
 
 export type { AppConfig, AppEnv } from "./types.js";

@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { EndpointType, LambdaIntegration, ResponseTransferMode, RestApi } from 'aws-cdk-lib/aws-apigateway';
 import { CfnBudget } from 'aws-cdk-lib/aws-budgets';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { CfnDataAutomationProject, CfnDataSource, CfnKnowledgeBase } from 'aws-cdk-lib/aws-bedrock';
@@ -12,6 +13,7 @@ import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { BlockPublicAccess, Bucket, BucketEncryption, EventType } from 'aws-cdk-lib/aws-s3';
 import { LambdaDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { CfnIndex, CfnVectorBucket } from 'aws-cdk-lib/aws-s3vectors';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
@@ -44,6 +46,13 @@ export interface BackendStackProps extends cdk.StackProps {
 }
 
 const BACKEND_ROOT = path.join(__dirname, '..', '..', 'backend');
+// Must be activated as a cost allocation tag in the Billing console before the budget can filter on it.
+const PROJECT_TAG_KEY = 'Project';
+const PROJECT_TAG_VALUE = 'Minerva';
+
+/** How long one API request may take, for the Lambda and for the gateway in front of it. A work plan needs up to a minute or so. */
+const API_TIMEOUT = cdk.Duration.minutes(2);
+
 const JOBS_SRC = path.join(BACKEND_ROOT, 'src', 'jobs');
 const API_SRC = path.join(BACKEND_ROOT, 'src', 'entrypoints');
 
@@ -59,6 +68,9 @@ export class BackendStack extends cdk.Stack {
     const chatModelId = props.chatModelId ?? 'us.anthropic.claude-sonnet-4-5-20250929-v1:0'
     const summaryModelId = props.summaryModelId ?? 'us.anthropic.claude-haiku-4-5-20251001-v1:0'
     const bdaProfileId = props.bdaProfileId ?? 'us.data-automation-v1'
+
+    // tag every taggable resource in the stack so the budget can filter to this project only
+    cdk.Tags.of(this).add(PROJECT_TAG_KEY, PROJECT_TAG_VALUE)
 
     // step 1: buckets, dynamodb, budget
     // raw, BDA output, processed and KB source are separate buckets so no Lambda
@@ -121,6 +133,14 @@ export class BackendStack extends cdk.Stack {
         budgetLimit: {
           amount: props.budgetLimitUsd ?? 20,
           unit: "USD"
+        },
+        // only count spend on resources tagged for this project (the account hosts other projects)
+        filterExpression: {
+          tags: {
+            key: PROJECT_TAG_KEY,
+            values: [PROJECT_TAG_VALUE],
+            matchOptions: ["EQUALS"]
+          }
         }
       },
       notificationsWithSubscribers: [
@@ -272,17 +292,23 @@ export class BackendStack extends cdk.Stack {
     const bdaProfileAnyRegionArn = `arn:${this.partition}:bedrock:*:${this.account}:data-automation-profile/${bdaProfileId}`
 
     // step 5/6: pipeline lambdas, events, ingestion queue
-    // only one ingestion job can run per data source, so a single FIFO message group
-    // makes SQS hand the ingest lambda one batch at a time
+    // only one ingestion job can run per data source. The ingest lambda never waits on a job: it re-queues
+    // delayed "check" messages, and per-message delay is not supported by FIFO queues, so this is a standard queue
     const ingestDlq = new Queue(this, "IngestDeadLetterQueue", {
-      fifo: true,
       retentionPeriod: cdk.Duration.days(14),
     })
 
     const ingestQueue = new Queue(this, "IngestQueue", {
-      fifo: true,
       visibilityTimeout: cdk.Duration.minutes(6),
       deadLetterQueue: { queue: ingestDlq, maxReceiveCount: 5 },
+    })
+
+    // Anthropic models are sold through AWS Marketplace, and Bedrock checks the caller's subscriptions on invoke.
+    // Subscribe is deliberately left out: it would let a Lambda create Marketplace subscriptions. Marketplace
+    // actions do not support resource-level permissions, so this is "*".
+    const marketplaceView = new PolicyStatement({
+      actions: ["aws-marketplace:ViewSubscriptions"],
+      resources: ["*"],
     })
 
     const commonEnvironment = {
@@ -364,6 +390,11 @@ export class BackendStack extends cdk.Stack {
         `arn:${this.partition}:bedrock:*:${this.account}:inference-profile/*`,
       ],
     }))
+    postProcessFunction.addToRolePolicy(marketplaceView)
+
+    // when identical content was already parsed, start-parse skips BDA and hands the file to post-process directly
+    startParseFunction.addEnvironment("POST_PROCESS_FUNCTION_NAME", postProcessFunction.functionName)
+    postProcessFunction.grantInvoke(startParseFunction)
 
     const bdaCompletionRule = new Rule(this, "BdaCompletionRule", {
       eventPattern: {
@@ -382,37 +413,98 @@ export class BackendStack extends cdk.Stack {
     const ingestFunction = pipelineFunction("IngestFunction", path.join(JOBS_SRC, "ingest.ts"), {
       timeout: cdk.Duration.minutes(1),
       memorySize: 256,
+      environment: { INGEST_QUEUE_URL: ingestQueue.queueUrl },
     })
     databaseTable.grantReadWriteData(ingestFunction)
-    ingestFunction.addEventSource(new SqsEventSource(ingestQueue, { batchSize: 10 }))
+    // the window lets several uploads share one ingestion job
+    ingestFunction.addEventSource(new SqsEventSource(ingestQueue, {
+      batchSize: 10,
+      maxBatchingWindow: cdk.Duration.seconds(30),
+    }))
+    // re-queues its own delayed "check" and "start" messages
+    ingestQueue.grantSendMessages(ingestFunction)
     ingestFunction.addToRolePolicy(new PolicyStatement({
       actions: ["bedrock:StartIngestionJob", "bedrock:GetIngestionJob", "bedrock:ListIngestionJobs"],
       resources: [knowledgeBase.attrKnowledgeBaseArn],
     }))
 
-    // step 7/8: chat lambda
-    const chatFunction = pipelineFunction("ChatFunction", path.join(API_SRC, "chat.ts"), {
-      timeout: cdk.Duration.minutes(5),
-      memorySize: 1024,
-      environment: { CHAT_MODEL_ID: chatModelId },
+    // the JWT signing key. It is passed to `cdk deploy --parameters`, held by CloudFormation as a masked (NoEcho)
+    // parameter with no default, kept in a Secrets Manager secret, and read by the API Lambda when it starts.
+    // It is not in the template, an environment variable, an output or any policy, so only the secret itself holds it.
+    const jwtPrivateKey = new cdk.CfnParameter(this, "JwtPrivateKey", {
+      type: "String",
+      noEcho: true,
+      description: "The JWT signing key, as one line of base64 (see the deploy notes). Required on every deploy that creates or changes it.",
     })
-    databaseTable.grantReadWriteData(chatFunction)
-    processedBucket.grantRead(chatFunction)
-    chatFunction.addToRolePolicy(new PolicyStatement({
+    const jwtKeySecret = new Secret(this, "JwtKeySecret", {
+      description: "Signs the API's access tokens",
+      secretStringValue: cdk.SecretValue.cfnParameter(jwtPrivateKey),
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    })
+
+    // api: the Fastify app as one Lambda behind an HTTP API, which also serves chat
+    // it reads the table, bucket and knowledge base names from the environment, so nothing in the app hard-codes them
+    const apiFunction = pipelineFunction("ApiFunction", path.join(API_SRC, "lambda.ts"), {
+      // a streamed reply can run well past the 29 seconds a buffered API Gateway response allows
+      timeout: API_TIMEOUT,
+      memorySize: 512,
+      // course matching is a small structured task, so it uses the cheap model that post-process summarises with
+      environment: {
+        APP_ENV: "production",
+        CHAT_MODEL_ID: chatModelId,
+        MATCH_MODEL_ID: summaryModelId,
+        // planning needs real reasoning, so it uses the chat model and not the cheap one
+        WORK_PLAN_MODEL_ID: chatModelId,
+        // where the signing key is kept, never the key itself
+        JWT_KEY_SECRET_ARN: jwtKeySecret.secretArn,
+      },
+    })
+    // the only reader of the key. It can read that one secret and cannot change it.
+    jwtKeySecret.grantRead(apiFunction)
+    databaseTable.grantReadWriteData(apiFunction)
+    // the API signs upload URLs, so its role must be allowed to put to the raw bucket. It never puts objects itself.
+    userFileBucket.grantPut(apiFunction)
+    // chat reads uploaded images from the raw bucket and a file's Markdown from the processed bucket
+    userFileBucket.grantRead(apiFunction)
+    processedBucket.grantRead(apiFunction)
+    apiFunction.addToRolePolicy(new PolicyStatement({
       actions: ["bedrock:Retrieve"],
       resources: [knowledgeBase.attrKnowledgeBaseArn],
     }))
-    chatFunction.addToRolePolicy(new PolicyStatement({
+    apiFunction.addToRolePolicy(new PolicyStatement({
       actions: ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
       resources: [
         `arn:${this.partition}:bedrock:*::foundation-model/*`,
         `arn:${this.partition}:bedrock:*:${this.account}:inference-profile/*`,
       ],
     }))
+    apiFunction.addToRolePolicy(marketplaceView)
 
-    new cdk.CfnOutput(this, "TableName", { value: databaseTable.tableName })
+    // a REST API, because an HTTP API buffers responses and so cannot stream chat replies.
+    // regional, because an edge-optimized endpoint cuts a stream off after 30 seconds without data
+    const restApi = new RestApi(this, "RestApi", {
+      endpointTypes: [EndpointType.REGIONAL],
+      // every path, the root included, goes to the app, which does its own routing and authentication
+      // the gateway has its own integration timeout, separate from the Lambda's, which is 29 seconds unless it is
+      // set here, so it is set to the same value as the Lambda's
+      defaultIntegration: new LambdaIntegration(apiFunction, {
+        responseTransferMode: ResponseTransferMode.STREAM,
+        timeout: API_TIMEOUT,
+      }),
+      deployOptions: {
+        // the API is public, so cap the request rate to keep a flood from becoming a bill
+        throttlingRateLimit: 20,
+        throttlingBurstLimit: 40,
+      },
+    })
+    restApi.root.addMethod("ANY")
+    restApi.root.addProxy({ anyMethod: true })
+
+    new cdk.CfnOutput(this, "ApiUrl", { value: restApi.url })
+    new cdk.CfnOutput(this, "TableName",{ value: databaseTable.tableName })
     new cdk.CfnOutput(this, "RawBucketName", { value: userFileBucket.bucketName })
-    new cdk.CfnOutput(this, "KbSourceBucketName", { value: kbSourceBucket.bucketName })
+    new cdk.CfnOutput(this, "BdaOutputBucketName", { value: bdaOutputBucket.bucketName })
+    new cdk.CfnOutput(this, "KbSourceBucketName",{ value: kbSourceBucket.bucketName })
     new cdk.CfnOutput(this, "KnowledgeBaseId", { value: knowledgeBase.attrKnowledgeBaseId })
     new cdk.CfnOutput(this, "DataSourceId", { value: dataSource.attrDataSourceId })
     new cdk.CfnOutput(this, "BdaProjectArn", { value: bdaProject.attrProjectArn })

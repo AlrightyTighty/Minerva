@@ -303,12 +303,12 @@ BDA is the biggest line item. Parsing half a textbook or a smaller book is the m
 
 1. [x] CDK: buckets, DynamoDB table
 2. [x] CDK: S3 Vectors bucket and index, KB, data source (default parser, explicit chunking, `DELETE` policy)
-3. [ ] Manually drop one `.md` and its sidecar into `kb-source/`, sync, and test `Retrieve` with a metadata filter
-4. [ ] CDK: BDA project. Test on a 20-page excerpt from the CLI or a script
-5. [ ] start-parse Lambda (idempotent, dedupe by hash) and post-process Lambda (split, sidecars, summary, token count)
-6. [ ] Ingestion trigger and status updates; delete flow
-7. [ ] Chat Lambda: thread and catalog loading, deterministic hydration, `ConverseStream`
-8. [ ] Tools: `search_course_materials`, then `get_resource`, then `load_resource`
-9. [ ] Frontend: streaming, tool status messages, "New chat", file status indicators
-10. [ ] Process the real demo textbooks (once!)
-11. [ ] After the semester: `cdk destroy`, confirm the bill is $0 the following month
+3. [x] Manually drop one `.md` and its sidecar into `kb-source/`, sync, and test `Retrieve` with a metadata filter
+4. [x] CDK: BDA project. Test on a 20-page excerpt from the CLI or a script
+5. [x] start-parse Lambda (idempotent, dedupe by hash) and post-process Lambda (split, sidecars, summary, token count)
+6. [x] Ingestion trigger and status updates; delete flow
+7. [x] Chat Lambda: thread and catalog loading, deterministic hydration, `ConverseStream`
+8. [x] Tools: `search_course_materials`, then `get_resource`, then `load_resource`
+9. [x] Frontend: streaming, tool status messages, "New chat", file status indicators
+10. [x] Process the real demo textbooks (once!)
+11. [] After the semester: `cdk destroy`, confirm the bill is $0 the following month

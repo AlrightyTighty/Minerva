@@ -98,7 +98,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:117:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:129:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -113,7 +113,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:150:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:170:26)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -128,7 +128,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:153:25)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:173:25)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -234,7 +234,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:201:27)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:221:27)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -249,7 +249,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:227:24)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:247:24)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -264,7 +264,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:251:24)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:271:24)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -275,7 +275,6 @@
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
-        "fifo": true,
         "retentionPeriod": "*"
       }
     }
@@ -284,7 +283,6 @@
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
-        "fifo": true,
         "visibilityTimeout": "*",
         "deadLetterQueue": {
           "queue": "*",
@@ -375,6 +373,10 @@
         },
         "logGroup": "*"
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
     }
   ],
   "/BackendStack/PostProcessFunctionLogs": [
@@ -549,6 +551,10 @@
       "data": {}
     },
     {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
       "type": "aws:cdk:analytics:construct",
       "data": {
         "entry": "*",
@@ -567,7 +573,32 @@
       }
     }
   ],
-  "/BackendStack/ChatFunctionLogs": [
+  "/BackendStack/JwtPrivateKey": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "JwtPrivateKey"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:434:27)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/JwtKeySecret": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "description": "*",
+        "secretStringValue": "*",
+        "removalPolicy": "destroy"
+      }
+    }
+  ],
+  "/BackendStack/ApiFunctionLogs": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -576,7 +607,7 @@
       }
     }
   ],
-  "/BackendStack/ChatFunction": [
+  "/BackendStack/ApiFunction": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -629,6 +660,22 @@
       "data": {}
     },
     {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {}
+    },
+    {
       "type": "aws:cdk:analytics:construct",
       "data": {
         "entry": "*",
@@ -647,6 +694,36 @@
       }
     }
   ],
+  "/BackendStack/RestApi": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "endpointTypes": [
+          "REGIONAL"
+        ],
+        "defaultIntegration": "*",
+        "deployOptions": {
+          "throttlingRateLimit": "*",
+          "throttlingBurstLimit": "*"
+        }
+      }
+    }
+  ],
+  "/BackendStack/ApiUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:503:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
   "/BackendStack/TableName": [
     {
       "type": "aws:cdk:logicalId",
@@ -655,7 +732,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:413:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:504:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -670,7 +747,22 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:414:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:505:5)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/BdaOutputBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BdaOutputBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:506:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -685,7 +777,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:415:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:507:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -700,7 +792,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:416:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:508:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -715,7 +807,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:417:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:509:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -730,7 +822,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:418:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:510:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -745,7 +837,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:419:5)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:511:5)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -787,7 +879,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:74:28)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -823,7 +915,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:367:20)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals..."
@@ -865,7 +957,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:78:29)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:90:29)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -901,7 +993,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:82:29)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:94:29)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -937,7 +1029,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:98:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -973,7 +1065,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Table2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:90:27)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:102:27)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -995,7 +1087,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Role2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:168:31)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:188:31)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1065,7 +1157,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Queue2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:277:23)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:297:23)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1081,7 +1173,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Queue2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:282:25)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:301:25)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1097,8 +1189,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new LogGroup2 in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:32)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1175,6 +1267,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/StartParseFunction/Resource": [
@@ -1186,8 +1286,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:32)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1252,7 +1352,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:367:20)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
       ]
@@ -1267,8 +1367,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new LogGroup2 in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:373:33)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1361,6 +1461,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/PostProcessFunction/Resource": [
@@ -1372,8 +1480,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:373:33)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1389,7 +1497,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Rule2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:368:31)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:399:31)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1405,7 +1513,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:378:23)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:409:23)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1421,8 +1529,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new LogGroup2 in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:413:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1491,6 +1599,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/IngestFunction/Resource": [
@@ -1502,8 +1618,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:413:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1528,24 +1644,40 @@
       }
     }
   ],
-  "/BackendStack/ChatFunctionLogs/Resource": [
+  "/BackendStack/JwtKeySecret/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "ChatFunctionLogsD0237167"
+      "data": "JwtKeySecret0D3F55AD"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "...new LogGroup2 in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:315:17)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "...new Secret2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:439:26)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
       ]
     }
   ],
-  "/BackendStack/ChatFunction/ServiceRole": [
+  "/BackendStack/ApiFunctionLogs/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ApiFunctionLogs0D7A2434"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:17)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:447:25)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/ApiFunction/ServiceRole": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": {
@@ -1615,23 +1747,137 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToPrincipalPolicy": [
+          {}
+        ]
+      }
     }
   ],
-  "/BackendStack/ChatFunction/Resource": [
+  "/BackendStack/ApiFunction/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "ChatFunction3D7C447E"
+      "data": "ApiFunctionCE271BD4"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:447:25)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
       ]
+    }
+  ],
+  "/BackendStack/RestApi/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApi0C43BF4B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:485:21)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Deployment": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "description": "*",
+        "api": "*",
+        "retainDeployments": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToLogicalId": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToLogicalId": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addToLogicalId": [
+          {}
+        ]
+      }
+    }
+  ],
+  "/BackendStack/RestApi/DeploymentStage.prod": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "deployment": "*",
+        "throttlingRateLimit": "*",
+        "throttlingBurstLimit": "*"
+      }
+    }
+  ],
+  "/BackendStack/RestApi/Endpoint": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiEndpoint0551178A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:485:21)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": "*"
     }
   ],
   "/BackendStack/CDKMetadata/Default": [
@@ -1669,7 +1915,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:74:28)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
       ]
     },
@@ -1734,7 +1980,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:367:20)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
@@ -1750,7 +1996,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:78:29)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:90:29)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
       ]
     },
@@ -1783,7 +2029,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:82:29)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:94:29)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
       ]
     },
@@ -1816,7 +2062,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Bucket2 in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:86:28)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:98:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
       ]
     },
@@ -1849,7 +2095,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:176:23)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:196:23)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
       ]
@@ -1864,8 +2110,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:32)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals..."
@@ -1932,6 +2178,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/StartParseFunction/Code/AssetBucket": [
@@ -1949,8 +2203,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:321:32)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:32)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)"
       ]
@@ -1965,7 +2219,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)"
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:367:20)"
       ]
     }
   ],
@@ -1978,8 +2232,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:347:33)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:373:33)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals..."
@@ -2062,6 +2316,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/PostProcessFunction/Code/AssetBucket": [
@@ -2079,8 +2341,8 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:382:28)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:413:28)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals..."
@@ -2139,6 +2401,14 @@
           {}
         ]
       }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
     }
   ],
   "/BackendStack/IngestFunction/Code/AssetBucket": [
@@ -2156,31 +2426,31 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addEventSource in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:387:20)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:420:20)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals, tsx..."
       ]
     }
   ],
-  "/BackendStack/ChatFunction/ServiceRole/Resource": [
+  "/BackendStack/ApiFunction/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "ChatFunctionServiceRole544D50A9"
+      "data": "ApiFunctionServiceRole52B9747B"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:303:26)",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:394:26)",
+        "pipelineFunction (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:329:26)",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:447:25)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
         "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
         "...node internals..."
       ]
     }
   ],
-  "/BackendStack/ChatFunction/ServiceRole/DefaultPolicy": [
+  "/BackendStack/ApiFunction/ServiceRole/DefaultPolicy": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": "*"
@@ -2198,6 +2468,38 @@
       "data": {
         "attachToRole": [
           "*"
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
+        ]
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addStatements": [
+          {}
         ]
       }
     },
@@ -2242,10 +2544,78 @@
       }
     }
   ],
-  "/BackendStack/ChatFunction/Code/AssetBucket": [
+  "/BackendStack/ApiFunction/Code/AssetBucket": [
     {
       "type": "aws:cdk:analytics:construct",
       "data": "*"
+    }
+  ],
+  "/BackendStack/RestApi/Deployment/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiDeployment180EC503b654cf35517f41bd220f46d990e75972"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:485:21)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/DeploymentStage.prod/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiDeploymentStageprod3855DE66"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new RestApi2 in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:485:21)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/ANY": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "resource": "*",
+        "httpMethod": "*",
+        "integration": "*",
+        "options": "*"
+      }
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "parent": "*",
+        "defaultIntegration": "*",
+        "defaultMethodOptions": "*"
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "parent": "*",
+        "anyMethod": true
+      }
+    },
+    {
+      "type": "aws:cdk:analytics:method",
+      "data": {
+        "addMethod": [
+          "*"
+        ]
+      }
     }
   ],
   "/BackendStack/UserFileBucket/Notifications/HandlerPolicy/Resource": [
@@ -2257,7 +2627,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...PropertyInjectable.addEventNotification in aws-cdk-lib...",
-        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:341:20)"
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:367:20)"
       ]
     }
   ],
@@ -2300,16 +2670,131 @@
       ]
     }
   ],
-  "/BackendStack/ChatFunction/ServiceRole/DefaultPolicy/Resource": [
+  "/BackendStack/ApiFunction/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
-      "data": "ChatFunctionServiceRoleDefaultPolicy8AB4563A"
+      "data": "ApiFunctionServiceRoleDefaultPolicy20A32B8D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.grantRead in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:463:18)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)"
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/ANY/ApiPermission.BackendStackRestApiDFEC8005.ANY..": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiANYApiPermissionBackendStackRestApiDFEC8005ANYBCF6A2F8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addMethod in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:500:18)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/ANY/ApiPermission.Test.BackendStackRestApiDFEC8005.ANY..": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiANYApiPermissionTestBackendStackRestApiDFEC8005ANY5627E7DD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addMethod in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:500:18)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/ANY/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiANYA7C1DC94"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addMethod in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:500:18)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiproxyC95856DD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addProxy in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:501:18)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:11:1)",
+        "<anonymous> (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/bin/infra.ts:26:2)",
+        "...node internals, tsx..."
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}/ANY": [
+    {
+      "type": "aws:cdk:analytics:construct",
+      "data": {
+        "resource": "*",
+        "httpMethod": "*",
+        "integration": "*",
+        "options": "*"
+      }
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}/ANY/ApiPermission.BackendStackRestApiDFEC8005.ANY..{proxy+}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiproxyANYApiPermissionBackendStackRestApiDFEC8005ANYproxyABB80C81"
     },
     {
       "type": "aws:cdk:creationStack",
       "data": [
         "...aws-cdk-lib...",
         "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}/ANY/ApiPermission.Test.BackendStackRestApiDFEC8005.ANY..{proxy+}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiproxyANYApiPermissionTestBackendStackRestApiDFEC8005ANYproxy2918BB91"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/BackendStack/RestApi/Default/{proxy+}/ANY/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "RestApiproxyANY1786B242"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...RootResource.addProxy in aws-cdk-lib...",
+        "new BackendStack (/Users/joshuanovak/School/Ubiq/Minerva/Source/Minerva/infra/lib/infra-stack.ts:501:18)"
       ]
     }
   ]
